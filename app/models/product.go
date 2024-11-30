@@ -50,3 +50,16 @@ func (p *Product) GetProduct(db *gorm.DB, perPage int, page int) (*[]Product, in
 	// bytes, _ := json.Marshal(&products)
 	// fmt.Println(string(bytes))
 }
+
+func (p *Product) FindBySlug(db *gorm.DB, slug string) (*Product, error) {
+	var err error
+	var product Product
+
+	err = db.Debug().Preload("ProductImages").Model(&Product{}).Where("slug = ?", slug).First(&product).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return &product, nil
+
+}
